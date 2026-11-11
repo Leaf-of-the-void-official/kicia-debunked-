@@ -66593,6 +66593,14 @@ end
 print("[Kicia] client alive, booting ...")
 print("[Kicia] controllers ready, booting ...")
 print("[FIX] auto-exec/color picker by skidcoded")
+print("tbl17:", type(tbl17))
+print("j1:", type(tbl17 and tbl17.j1))
+print("bootFn:", type(bootFn))
+
+if type(tbl17) == "table" and type(tbl17.j1) == "function" then
+    print("j1 return:", type(tbl17.j1()))
+end
+
 tbl17.j1()(bootFn())
 task.spawn(function()
 task.wait(60)
