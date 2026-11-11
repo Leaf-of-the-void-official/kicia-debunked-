@@ -7,6 +7,23 @@ if getgenv().KiciaRebuild and getgenv().KiciaRebuild.Unload then
 end
 if not game:IsLoaded() then game.Loaded:Wait() end
 
+--  Wait for the local player to be alive (character + root part + health > 0)
+--  before doing anything. Gives up after 30s so it can never hang forever.
+do
+    local lp = game:GetService("Players").LocalPlayer
+    while lp == nil do
+        task.wait()
+        lp = game:GetService("Players").LocalPlayer
+    end
+    local started = os.clock()
+    local function alive()
+        local c = lp.Character
+        local h = c and c:FindFirstChildOfClass("Humanoid")
+        return h ~= nil and h.Health > 0 and c:FindFirstChild("HumanoidRootPart") ~= nil
+    end
+    while not alive() and os.clock() - started < 30 do task.wait(0.25) end
+end
+
 local K = { connections = {}, cleanups = {}, destroyed = false }
 getgenv().KiciaRebuild = K
 
