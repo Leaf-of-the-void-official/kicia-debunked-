@@ -66545,12 +66545,64 @@ local boot = (function()
     }
 end)()
 
-function K.Unload()
-    if K.destroyed then return end
-    K.destroyed = true
-    for _, f in ipairs(K.cleanups) do pcall(f) end
-    pcall(function() GlobalTrove:Destroy() end)
-    if getgenv().KiciaRebuild == K then getgenv().KiciaRebuild = nil end
+-- (autoexec fix: game controller modules error when required before the
+-- game finishes replicating them, so wait for Controllers before booting)
+task.spawn(function()
+local _players = game:GetService("Players")
+local _wt0 = os.clock()
+while not _players.LocalPlayer and os.clock() - _wt0 < 60 do task.wait() end
+local _lp = _players.LocalPlayer
+if not _lp then warn("[Kicia] ABORTED: no LocalPlayer after 60s"); return end
+local _ps = _lp:FindFirstChild("PlayerScripts")
+if not _ps then
+pcall(function() _lp:WaitForChild("PlayerScripts", 60) end)
+_ps = _lp:FindFirstChild("PlayerScripts")
 end
+if not _ps then warn("[Kicia] ABORTED: no PlayerScripts"); return end
+local _ctrl = _ps:FindFirstChild("Controllers")
+if _ps and not _ctrl then
+print("[Kicia] waiting for PlayerScripts.Controllers ...")
+pcall(function() _ps:WaitForChild("Controllers", 30) end)
+_ctrl = _ps:FindFirstChild("Controllers")
+end
+if not _ctrl then
+warn("[Kicia] ABORTED: PlayerScripts.Controllers not found. This script is built for Rivals - remove it from autoexec if you are in a different game.")
+return
+end
+-- (no spawn gate: boot ASAP once data is ready)
+-- Adaptive fast boot: NO require() calls before boot (hands off the game's
+-- enum build). Boot as soon as the client looks alive: spawned + game HUD
+-- present. Usually seconds after join; 45s cap, then boot anyway.
+print("[Kicia] waiting for client to come alive ...")
+local _wt1 = os.clock()
+while os.clock() - _wt1 < 45 do
+local _ch = _lp.Character
+local _pg0 = _lp:FindFirstChild("PlayerGui")
+local _spawnedOk = _ch ~= nil and _ch:FindFirstChildOfClass("Humanoid") ~= nil
+local _uiOk = false
+if _pg0 then
+local _n = 0
+for _, _c in ipairs(_pg0:GetChildren()) do
+if _c:IsA("ScreenGui") then _n = _n + 1 end
+end
+_uiOk = _n >= 2
+end
+if _spawnedOk and _uiOk then break end
+task.wait(1)
+end
+print("[Kicia] client alive, booting ...")
+print("[Kicia] controllers ready, booting ...")
+print("[FIX] auto-exec/color picker by skidcoded")
+tbl17.j1()(bootFn())
+task.spawn(function()
+task.wait(60)
+local _pg3 = _lp:FindFirstChild("PlayerGui")
+local _ls = _pg3 and _pg3:FindFirstChild("LoadingScreen")
+if _ls and _ls:IsA("LayerCollector") and _ls.Enabled then
+print("[Kicia] please rejoin it broke lolz.")
+_ls.Enabled = false
+end
+end)
+end)
 
 tbl17.j1()(boot)
