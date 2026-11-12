@@ -19905,7 +19905,7 @@ return be.c
 end
 end
 do -- bf
-local function fn35() tbl17 .a_();local I= tbl17 .i().atomic;return{UserServer={ShowActive=false,ShareSkins=false},UnlockAll={Enabled=false,Cosmetics=I({}),Rarities=I({})}};end
+local function fn35() tbl17 .a_();local I= tbl17 .i().atomic;return{UserServer={ShowActive=false,ShareSkins=false},UnlockAll={Enabled=false,Cosmetics=I({}),Rarities=I({}),Locked=I({})}};end
 
 tbl17.bf = function()
 local bf = tbl17.cache.bf
@@ -34455,6 +34455,8 @@ index2.new = function()
 return setmetatable({
 _typeSet = {},
 _raritySet = {},
+_forceSet = {},
+_lockSet = {},
 _inventory = {},
 _typeByName = {},
 _namesByType = { Skin = {}, Wrap = {}, Charm = {}, Finisher = {}, Emote = {} },
@@ -34472,8 +34474,8 @@ arg._nameSetByType = { Skin = {}, Wrap = {}, Charm = {}, Finisher = {}, Emote = 
 for k, v119 in v102(cosmeticLibrary, "Cosmetics"), nil, nil do
 local v120 = v102(v119, "Type")
 
-if arg._typeSet[v120] then
-if arg._raritySet[v102(v119, "Rarity")] then
+if arg._lockSet[k] ~= true and ((arg._typeSet[v120] and arg._raritySet[v102(v119, "Rarity")]) or arg._forceSet[k] == true) then
+if true then
 if v120 == "Skin" then
 local itemName = v102(v119, "ItemName")
 
@@ -34529,6 +34531,14 @@ end
 
 index2.GetIncludedRarities = function(arg)
 return arg._raritySet
+end
+
+index2.SetForcedCosmetics = function(arg, nameSet)
+arg._forceSet = nameSet or {}
+end
+
+index2.SetLockedCosmetics = function(arg, nameSet)
+arg._lockSet = nameSet or {}
 end
 
 index2.GetRandomCosmetic = function(arg, arg2)
@@ -41705,6 +41715,18 @@ arg:_RebuildCatalog()
 arg:_FireStoresUpdated()
 end
 
+index2.SetForcedCosmetics = function(arg, arg2)
+arg._catalog:SetForcedCosmetics(arg2)
+arg:_RebuildCatalog()
+arg:_FireStoresUpdated()
+end
+
+index2.SetLockedCosmetics = function(arg, arg2)
+arg._catalog:SetLockedCosmetics(arg2)
+arg:_RebuildCatalog()
+arg:_FireStoresUpdated()
+end
+
 index2._SetOnlyUseFavorites = function(arg, arg2, arg3, arg4)
 local v130 = arg._onlyUseFavoritesState:Set(arg2, arg3, arg4)
 
@@ -42436,6 +42458,14 @@ end
 index2.SetUnlockedRarities = function(arg, arg2)
 arg._cosmetics:SetUnlockedRarities(arg2)
 return arg:_SaveLiveState()
+end
+
+index2.SetForcedCosmetics = function(arg, arg2)
+arg._cosmetics:SetForcedCosmetics(arg2)
+end
+
+index2.SetLockedCosmetics = function(arg, arg2)
+arg._cosmetics:SetLockedCosmetics(arg2)
 end
 
 index2.GetState = function(arg)
@@ -59787,7 +59817,31 @@ return io.c
 end
 end
 do -- ip
-local function fn35() tbl17 .aE(); tbl17 .hN();local I,W,N,P= tbl17 .il(), tbl17 .im(), tbl17 .io(),{Overview="rbxassetid://89644754139307",Skins="rbxassetid://97652569554326",Wraps="rbxassetid://76631821212930",Charms="rbxassetid://125353572203968",Finishers="rbxassetid://82039875682356",Presets="rbxassetid://119633739754015"};return function(l,a)local e=a:AddTab({Label="Cosmetics",Icon="rbxassetid://128162112866809",Description="Manage cosmetic runtime, catalogs, and cosmetic presets."});N(l,(e:AddTab({Label="Presets",Icon=P.Presets,Description="Create, load, automate, and delete whole cosmetic loadouts."}):Grid({Columns=2})));W(l,e:AddTab({Label="Overview",Icon=P.Overview,Description="Enable cosmetic features, unlock cosmetics, reroll, and share your active look."}):Grid({Columns=2}),(I(l,{Skins=e:AddTab({Label="Skins",Icon=P.Skins,Description="Browse and apply weapon skin variants."}),Wraps=e:AddTab({Label="Wraps",Icon=P.Wraps,Description="Browse weapon wraps and control inverted patterns."}),Charms=e:AddTab({Label="Charms",Icon=P.Charms,Description="Browse weapon charms and optionally override rank charms."}),Finishers=e:AddTab({Label="Finishers",Icon=P.Finishers,Description="Browse and apply weapon finishers."})})));end;end
+local function fn35() tbl17 .aE(); tbl17 .hN();local I,W,N,P= tbl17 .il(), tbl17 .im(), tbl17 .io(),{Overview="rbxassetid://89644754139307",Skins="rbxassetid://97652569554326",Wraps="rbxassetid://76631821212930",Charms="rbxassetid://125353572203968",Finishers="rbxassetid://82039875682356",Presets="rbxassetid://119633739754015"};
+local function buildUnlockLock(l,grid)
+    local names={}
+    pcall(function()
+        for k in pairs(tbl17.aS().CosmeticLibrary.Cosmetics) do names[#names+1]=tostring(k) end
+    end)
+    table.sort(names)
+    local left=grid:AddSection({Title="Always Unlock",Side="left"})
+    local right=grid:AddSection({Title="Always Lock",Side="right"})
+    left:AddLabel({Label="These stay unlocked even if their type or rarity isn't selected in Overview."})
+    left:AddMultiDropdown({Label="Cosmetics to Unlock",Options=names,Search=true,Config={"UnlockAll","Cosmetics"}})
+    right:AddLabel({Label="These are never unlocked, even if their type and rarity are selected in Overview."})
+    right:AddMultiDropdown({Label="Cosmetics to Lock",Options=names,Search=true,Config={"UnlockAll","Locked"}})
+    local cfg=left:GetConfig()
+    if cfg~=nil then
+        local function push()
+            l.CosmeticsConfig:SetForcedCosmetics(cfg:Get({"UnlockAll","Cosmetics"}) or {})
+            l.CosmeticsConfig:SetLockedCosmetics(cfg:Get({"UnlockAll","Locked"}) or {})
+        end
+        cfg:Changed({"UnlockAll","Cosmetics"}):Connect(push)
+        cfg:Changed({"UnlockAll","Locked"}):Connect(push)
+        push()
+    end
+end
+return function(l,a)local e=a:AddTab({Label="Cosmetics",Icon="rbxassetid://128162112866809",Description="Manage cosmetic runtime, catalogs, and cosmetic presets."});buildUnlockLock(l,e:AddTab({Label="Unlock / Lock",Icon=P.Overview,Description="Pick specific cosmetics to always unlock or always lock."}):Grid({Columns=2}));N(l,(e:AddTab({Label="Presets",Icon=P.Presets,Description="Create, load, automate, and delete whole cosmetic loadouts."}):Grid({Columns=2})));W(l,e:AddTab({Label="Overview",Icon=P.Overview,Description="Enable cosmetic features, unlock cosmetics, reroll, and share your active look."}):Grid({Columns=2}),(I(l,{Skins=e:AddTab({Label="Skins",Icon=P.Skins,Description="Browse and apply weapon skin variants."}),Wraps=e:AddTab({Label="Wraps",Icon=P.Wraps,Description="Browse weapon wraps and control inverted patterns."}),Charms=e:AddTab({Label="Charms",Icon=P.Charms,Description="Browse weapon charms and optionally override rank charms."}),Finishers=e:AddTab({Label="Finishers",Icon=P.Finishers,Description="Browse and apply weapon finishers."})})));end;end
 
 tbl17.ip = function()
 local ip = tbl17.cache.ip
