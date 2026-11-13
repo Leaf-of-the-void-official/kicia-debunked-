@@ -19905,7 +19905,7 @@ return be.c
 end
 end
 do -- bf
-local function fn35() tbl17 .a_();local I= tbl17 .i().atomic;return{UserServer={ShowActive=false,ShareSkins=false},UnlockAll={Enabled=false,Cosmetics=I({}),Rarities=I({}),Locked=I({})}};end
+local function fn35() tbl17 .a_();local I= tbl17 .i().atomic;return{UserServer={ShowActive=false,ShareSkins=false},UnlockAll={Enabled=false,Cosmetics=I({}),Rarities=I({}),ForceRules=I({}),LockRules=I({})}};end
 
 tbl17.bf = function()
 local bf = tbl17.cache.bf
@@ -34451,12 +34451,53 @@ end }
 local v118 = index2._BuildAllItemNamesSet()
 index2.__index = index2
 
+-- Per-cosmetic unlock/lock rules. Rule keys look like "Category::Weapon::Cosmetic"
+-- where Weapon is an item name, or "*" for every weapon/utility.
+local function parseRules(set)
+local out = {}
+for key, on in pairs(set or {}) do
+if on then
+local cat, who, name = string.match(key, "^(.-)::(.-)::(.+)$")
+if cat ~= nil then
+local byName = out[cat]
+if byName == nil then byName = {}; out[cat] = byName end
+local e = byName[name]
+if e == nil then e = { all = false, items = {} }; byName[name] = e end
+if who == "*" then e.all = true else e.items[who] = true end
+end
+end
+end
+return out
+end
+
+local function ruleHit(rules, cat, name, itemName)
+local byName = rules[cat]
+local e = byName and byName[name]
+if e == nil then return false end
+return e.all or e.items[itemName] == true
+end
+
+-- the set of weapons/utilities a wrap/charm/finisher is unlocked for (nil = none)
+local function buildItemSet(baseOk, f, l)
+if f == nil and l == nil then return baseOk and v118 or nil end
+local inv = {}
+if baseOk then for it in pairs(v118) do inv[it] = true end end
+if f ~= nil then
+if f.all then for it in pairs(v118) do inv[it] = true end else for it in pairs(f.items) do inv[it] = true end end
+end
+if l ~= nil then
+if l.all then inv = {} else for it in pairs(l.items) do inv[it] = nil end end
+end
+if next(inv) == nil then return nil end
+return inv
+end
+
 index2.new = function()
 return setmetatable({
 _typeSet = {},
 _raritySet = {},
-_forceSet = {},
-_lockSet = {},
+_forceRules = {},
+_lockRules = {},
 _inventory = {},
 _typeByName = {},
 _namesByType = { Skin = {}, Wrap = {}, Charm = {}, Finisher = {}, Emote = {} },
@@ -34470,15 +34511,18 @@ arg._inventory = {}
 arg._typeByName = {}
 arg._namesByType = { Skin = {}, Wrap = {}, Charm = {}, Finisher = {}, Emote = {} }
 arg._nameSetByType = { Skin = {}, Wrap = {}, Charm = {}, Finisher = {}, Emote = {} }
+local forceRules, lockRules = arg._forceRules, arg._lockRules
 
 for k, v119 in v102(cosmeticLibrary, "Cosmetics"), nil, nil do
 local v120 = v102(v119, "Type")
+local baseOk = (arg._typeSet[v120] and arg._raritySet[v102(v119, "Rarity")]) and true or false
 
-if arg._lockSet[k] ~= true and ((arg._typeSet[v120] and arg._raritySet[v102(v119, "Rarity")]) or arg._forceSet[k] == true) then
-if true then
 if v120 == "Skin" then
 local itemName = v102(v119, "ItemName")
+local forced = ruleHit(forceRules, "Skin", k, itemName)
+local locked = ruleHit(lockRules, "Skin", k, itemName)
 
+if (baseOk or forced) and not locked then
 if arg._namesByType.Skin[itemName] == nil then
 arg._namesByType.Skin[itemName] = {}
 end
@@ -34490,26 +34534,23 @@ end
 table.insert(arg._namesByType.Skin[itemName], k)
 arg._nameSetByType.Skin[itemName][k] = true
 arg._typeByName[k] = v120
-arg._inventory[k] = v86[34]
-elseif v120 == "Wrap" then
-table.insert(arg._namesByType.Wrap, k)
-arg._nameSetByType.Wrap[k] = true
-arg._typeByName[k] = v120
-arg._inventory[k] = v118
-elseif v120 == "Charm" then
-table.insert(arg._namesByType.Charm, k)
-arg._nameSetByType.Charm[k] = true
-arg._typeByName[k] = v120
-arg._inventory[k] = v118
-elseif v120 == "Finisher" then
-table.insert(arg._namesByType.Finisher, k)
-arg._nameSetByType.Finisher[k] = v86[34]
-arg._typeByName[k] = v120
-arg._inventory[k] = v118
-elseif v120 == "Emote" then
-arg._typeByName[k] = v120
 arg._inventory[k] = true
 end
+elseif v120 == "Wrap" or v120 == "Charm" or v120 == "Finisher" then
+local f = forceRules[v120] and forceRules[v120][k] or nil
+local l = lockRules[v120] and lockRules[v120][k] or nil
+local inv = buildItemSet(baseOk, f, l)
+
+if inv ~= nil then
+table.insert(arg._namesByType[v120], k)
+arg._nameSetByType[v120][k] = true
+arg._typeByName[k] = v120
+arg._inventory[k] = inv
+end
+elseif v120 == "Emote" then
+if baseOk then
+arg._typeByName[k] = v120
+arg._inventory[k] = true
 end
 end
 end
@@ -34533,12 +34574,12 @@ index2.GetIncludedRarities = function(arg)
 return arg._raritySet
 end
 
-index2.SetForcedCosmetics = function(arg, nameSet)
-arg._forceSet = nameSet or {}
+index2.SetForcedCosmetics = function(arg, ruleSet)
+arg._forceRules = parseRules(ruleSet)
 end
 
-index2.SetLockedCosmetics = function(arg, nameSet)
-arg._lockSet = nameSet or {}
+index2.SetLockedCosmetics = function(arg, ruleSet)
+arg._lockRules = parseRules(ruleSet)
 end
 
 index2.GetRandomCosmetic = function(arg, arg2)
@@ -34579,7 +34620,16 @@ if arg2.CosmeticType == "Skin" then
 local v119 = arg._nameSetByType.Skin[arg2.ItemName]
 return v119 ~= nil and v119[arg2.CosmeticName] == true
 end
-return arg._nameSetByType[arg2.CosmeticType][arg2.CosmeticName] == true
+if arg._nameSetByType[arg2.CosmeticType][arg2.CosmeticName] ~= true then
+return false
+end
+
+local inv = arg._inventory[arg2.CosmeticName]
+if type(inv) == "table" and arg2.ItemName ~= nil and inv[arg2.ItemName] == nil then
+return false
+end
+
+return true
 end
 
 index2.IsCosmeticInCatalog = function(arg, arg2, arg3)
@@ -59819,26 +59869,106 @@ end
 do -- ip
 local function fn35() tbl17 .aE(); tbl17 .hN();local I,W,N,P= tbl17 .il(), tbl17 .im(), tbl17 .io(),{Overview="rbxassetid://89644754139307",Skins="rbxassetid://97652569554326",Wraps="rbxassetid://76631821212930",Charms="rbxassetid://125353572203968",Finishers="rbxassetid://82039875682356",Presets="rbxassetid://119633739754015"};
 local function buildUnlockLock(l,grid)
-    local names={}
+    local ALL="All Weapons / Utilities"
+    local FORCE,LOCK={"UnlockAll","ForceRules"},{"UnlockAll","LockRules"}
+    local itemNames,namesByCat,skinItem={}, {Skin={},Wrap={},Charm={},Finisher={}}, {}
     pcall(function()
-        for k in pairs(tbl17.aS().CosmeticLibrary.Cosmetics) do names[#names+1]=tostring(k) end
+        local libs=tbl17.aS()
+        for k in pairs(libs.ItemLibrary.Items) do itemNames[#itemNames+1]=tostring(k) end
+        for k,v in pairs(libs.CosmeticLibrary.Cosmetics) do
+            local list=namesByCat[v.Type]
+            if list~=nil then list[#list+1]=tostring(k) end
+            if v.Type=="Skin" then skinItem[tostring(k)]=v.ItemName end
+        end
     end)
-    table.sort(names)
-    local left=grid:AddSection({Title="Always Unlock",Side="left"})
-    local right=grid:AddSection({Title="Always Lock",Side="right"})
-    left:AddLabel({Label="These stay unlocked even if their type or rarity isn't selected in Overview."})
-    left:AddMultiDropdown({Label="Cosmetics to Unlock",Options=names,Search=true,Config={"UnlockAll","Cosmetics"}})
-    right:AddLabel({Label="These are never unlocked, even if their type and rarity are selected in Overview."})
-    right:AddMultiDropdown({Label="Cosmetics to Lock",Options=names,Search=true,Config={"UnlockAll","Locked"}})
-    local cfg=left:GetConfig()
+    table.sort(itemNames)
+    for _,list in pairs(namesByCat) do table.sort(list) end
+    local scopeOptions={ALL}
+    for _,n in ipairs(itemNames) do scopeOptions[#scopeOptions+1]=n end
+
+    local function optionsFor(cat,scope)
+        local list=namesByCat[cat]
+        if cat~="Skin" or scope==ALL then return list end
+        local out={}
+        for _,n in ipairs(list) do if skinItem[n]==scope then out[#out+1]=n end end
+        return out
+    end
+
+    local cfg,writing,ready,controls=nil,false,false,{}
+    local function readSet(path)
+        local v=cfg:Get(path)
+        return type(v)=="table" and v or {}
+    end
+    local function prefixOf(cat,scope) return cat.."::"..(scope==ALL and "*" or scope).."::" end
+    local function selectionFor(path,cat,scope)
+        local prefix,out=prefixOf(cat,scope),{}
+        for key,on in pairs(readSet(path)) do
+            if on and key:sub(1,#prefix)==prefix then out[key:sub(#prefix+1)]=true end
+        end
+        return out
+    end
+    local function writeSelection(path,cat,scope,selection)
+        local prefix,new=prefixOf(cat,scope),{}
+        for key,on in pairs(readSet(path)) do
+            if key:sub(1,#prefix)~=prefix then new[key]=on end
+        end
+        for name,on in pairs(selection or {}) do
+            if on then new[prefix..name]=true end
+        end
+        writing=true
+        pcall(function() cfg:Set(path,new) end)
+        writing=false
+    end
+
+    local function addCategory(cat,title,side,note)
+        local sec=grid:AddSection({Title=title,Side=side})
+        if cfg==nil then cfg=sec:GetConfig() end
+        local state={scope=ALL}
+        if note~=nil then sec:AddLabel({Label=note}) end
+        sec:AddDropdown({Label="Weapon / Utility",Options=scopeOptions,Default=ALL,Search=true,OnChanged=function(v)
+            if not ready then return end
+            state.scope=type(v)=="string" and v or ALL
+            state.reload()
+        end})
+        local unlockDD=sec:AddMultiDropdown({Label="Unlock",Options=optionsFor(cat,ALL),Search=true,OnChanged=function(set)
+            if not ready then return end
+            writeSelection(FORCE,cat,state.scope,set)
+        end})
+        local lockDD=sec:AddMultiDropdown({Label="Lock",Options=optionsFor(cat,ALL),Search=true,OnChanged=function(set)
+            if not ready then return end
+            writeSelection(LOCK,cat,state.scope,set)
+        end})
+        state.reload=function()
+            local opts=optionsFor(cat,state.scope)
+            unlockDD:SetOptions(opts)
+            lockDD:SetOptions(opts)
+            unlockDD:Set(selectionFor(FORCE,cat,state.scope),true)
+            lockDD:Set(selectionFor(LOCK,cat,state.scope),true)
+        end
+        controls[#controls+1]=state
+    end
+
+    addCategory("Skin","Skins","left","Needs Unlock All Cosmetics on in Overview. Pick a weapon, then choose skins to always unlock or lock.")
+    addCategory("Wrap","Wraps","right","Pick a weapon/utility (or all) and choose wraps to always unlock or lock for it.")
+    addCategory("Charm","Charms","left",nil)
+    addCategory("Finisher","Finishers","right",nil)
+
     if cfg~=nil then
         local function push()
-            l.CosmeticsConfig:SetForcedCosmetics(cfg:Get({"UnlockAll","Cosmetics"}) or {})
-            l.CosmeticsConfig:SetLockedCosmetics(cfg:Get({"UnlockAll","Locked"}) or {})
+            l.CosmeticsConfig:SetForcedCosmetics(readSet(FORCE))
+            l.CosmeticsConfig:SetLockedCosmetics(readSet(LOCK))
         end
-        cfg:Changed({"UnlockAll","Cosmetics"}):Connect(push)
-        cfg:Changed({"UnlockAll","Locked"}):Connect(push)
+        local function onChanged()
+            push()
+            if not writing then
+                for _,st in ipairs(controls) do st.reload() end
+            end
+        end
+        cfg:Changed(FORCE):Connect(onChanged)
+        cfg:Changed(LOCK):Connect(onChanged)
+        for _,st in ipairs(controls) do st.reload() end
         push()
+        ready=true
     end
 end
 return function(l,a)local e=a:AddTab({Label="Cosmetics",Icon="rbxassetid://128162112866809",Description="Manage cosmetic runtime, catalogs, and cosmetic presets."});buildUnlockLock(l,e:AddTab({Label="Unlock / Lock",Icon=P.Overview,Description="Pick specific cosmetics to always unlock or always lock."}):Grid({Columns=2}));N(l,(e:AddTab({Label="Presets",Icon=P.Presets,Description="Create, load, automate, and delete whole cosmetic loadouts."}):Grid({Columns=2})));W(l,e:AddTab({Label="Overview",Icon=P.Overview,Description="Enable cosmetic features, unlock cosmetics, reroll, and share your active look."}):Grid({Columns=2}),(I(l,{Skins=e:AddTab({Label="Skins",Icon=P.Skins,Description="Browse and apply weapon skin variants."}),Wraps=e:AddTab({Label="Wraps",Icon=P.Wraps,Description="Browse weapon wraps and control inverted patterns."}),Charms=e:AddTab({Label="Charms",Icon=P.Charms,Description="Browse weapon charms and optionally override rank charms."}),Finishers=e:AddTab({Label="Finishers",Icon=P.Finishers,Description="Browse and apply weapon finishers."})})));end;end
