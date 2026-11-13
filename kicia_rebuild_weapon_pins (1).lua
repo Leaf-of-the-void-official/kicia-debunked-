@@ -19905,7 +19905,7 @@ return be.c
 end
 end
 do -- bf
-local function fn35() tbl17 .a_();local I= tbl17 .i().atomic;return{UserServer={ShowActive=false,ShareSkins=false},UnlockAll={Enabled=false,Cosmetics=I({}),Rarities=I({}),ForceRules=I({}),LockRules=I({})}};end
+local function fn35() tbl17 .a_();local I= tbl17 .i().atomic;return{UserServer={ShowActive=false,ShareSkins=false},UnlockAll={Enabled=false,Cosmetics=I({}),Rarities=I({}),ForceRules=I({}),LockRules=I({}),Weapons=false}};end
 
 tbl17.bf = function()
 local bf = tbl17.cache.bf
@@ -59232,9 +59232,114 @@ local tbl18 = {
 
 local tbl19 = { Unselected = true, None = v86[34], Random = true }
 
+-- Creator ("YouTuber") charms: shown when you search with "@".
+-- A charm counts if its name starts with "@", or its data has a creator/YouTuber/
+-- influencer/streamer/channel/partner field, or a text field mentioning YouTube.
+local creatorCache = {}
+
+local function isCreatorCharm(name)
+local cached = creatorCache[name]
+if cached ~= nil then return cached end
+local result = false
+
+pcall(function()
+local data = tbl17.aS().CosmeticLibrary.Cosmetics[name]
+if type(data) ~= "table" or data.Type ~= "Charm" then
+return
+end
+
+local extra = getgenv().KiciaCreatorCharms
+if type(extra) == "table" then
+local lname = string.lower(name)
+for k, v in pairs(extra) do
+local n = (type(k) == "string" and v == true) and k or v
+if type(n) == "string" and string.lower(n) == lname then
+result = true
+return
+end
+end
+end
+
+if string.sub(name, 1, 1) == "@" then
+result = true
+return
+end
+
+for field, value in pairs(data) do
+local f = type(field) == "string" and string.lower(field) or ""
+local marker = string.find(f, "youtub", 1, true) or string.find(f, "creator", 1, true) or string.find(f, "influenc", 1, true) or string.find(f, "streamer", 1, true) or string.find(f, "channel", 1, true) or string.find(f, "partner", 1, true)
+
+if marker and value ~= false and value ~= nil and value ~= "" and value ~= 0 then
+result = true
+return
+end
+
+if type(value) == "string" then
+if string.sub(value, 1, 1) == "@" or string.find(string.lower(value), "youtub", 1, true) then
+result = true
+return
+end
+end
+end
+end)
+
+creatorCache[name] = result
+return result
+end
+
+local debugPrinted = {}
+
 local function fn40(arg)
 if arg == "" then
 return nil
+end
+
+-- "@?name" prints that charm's raw data to the F9 console (to find what marks creator charms)
+if string.sub(arg, 1, 2) == "@?" then
+local q = string.lower(string.sub(arg, 3))
+
+if #q >= 3 and not debugPrinted[q] then
+debugPrinted[q] = true
+pcall(function()
+for name, data in pairs(tbl17.aS().CosmeticLibrary.Cosmetics) do
+if type(data) == "table" and data.Type == "Charm" and string.find(string.lower(tostring(name)), q, 1, true) then
+local parts = {}
+for f, v in pairs(data) do
+parts[#parts + 1] = tostring(f) .. "=" .. tostring(v)
+end
+table.sort(parts)
+print("[Kicia Rebuild] charm data: " .. tostring(name) .. " { " .. table.concat(parts, ", ") .. " }")
+end
+end
+end)
+end
+
+return function(arg2, arg3)
+if tbl19[arg2.Name] then
+return true
+end
+return v119(arg3, q) ~= nil
+end
+end
+
+if string.sub(arg, 1, 1) == "@" then
+local rest = string.sub(arg, 2)
+
+return function(arg2, arg3)
+if tbl19[arg2.Name] then
+return true
+end
+
+if v119(arg3, arg) ~= nil then
+return true
+end
+
+if not isCreatorCharm(arg2.Name) then
+return false
+end
+
+return rest == "" or v119(arg3, rest) ~= nil
+end
 end
 
 return function(arg2, arg3)
@@ -59519,8 +59624,10 @@ local function fn50(arg3, arg4, arg5, arg6)
 arg3:SetFilter(fn40(arg4))
 
 if arg4 ~= "" then
+local matcher = fn40(arg4)
+
 for _, v145 in arg5, nil, nil do
-if v119(v145:lower(), arg4) ~= nil then
+if matcher({ Name = v145 }, v145:lower()) then
 arg3:SetState("Ready")
 return
 end
@@ -59952,6 +60059,10 @@ local function buildUnlockLock(l,grid)
     addCategory("Wrap","Wraps","right","Pick a weapon/utility (or all) and choose wraps to always unlock or lock for it.")
     addCategory("Charm","Charms","left",nil)
     addCategory("Finisher","Finishers","right",nil)
+
+    local weaponSec=grid:AddSection({Title="Weapons",Side="left"})
+    weaponSec:AddToggle({Label="Unlock All Weapons",Tooltip="Client-side only: every weapon and utility shows as owned in your menus.",Config={"UnlockAll","Weapons"}})
+    weaponSec:AddLabel({Label="Visual only - the server decides what you can actually use in a match."})
 
     if cfg~=nil then
         local function push()
@@ -61902,6 +62013,101 @@ tbl17.cache.jt = jt
 end
 
 return jt.c
+end
+end
+do -- jUW (client-side unlock of every weapon/utility)
+local function fn35()
+local store = tbl17.bG()
+tbl17.dR()
+local Trove = tbl17.k()
+local itemLibrary = tbl17.aS().ItemLibrary
+local index2 = {}
+index2.__index = index2
+
+index2.new = function(dataHook)
+local trove = Trove.new()
+local self = setmetatable({ _trove = trove, _dataHook = dataHook, _enabled = false }, index2)
+
+trove:Connect(store:GetPropertyChangedSignal({ "UnlockAll", "Weapons" }), function(value)
+self:_SetEnabled(value == true)
+end)
+
+self:_SetEnabled(store.Data.UnlockAll.Weapons == true)
+return self
+end
+
+-- empty entry for a weapon the player doesn't own: Name plus zeroed counters
+local function blankEntry(sample, name)
+local entry = {}
+if type(sample) == "table" then
+for k, v in pairs(sample) do
+if type(v) == "number" then entry[k] = 0
+elseif type(v) == "boolean" then entry[k] = false end
+end
+end
+entry.Name = name
+return entry
+end
+
+-- the player's real weapon list plus an entry for every weapon/utility that's missing
+index2._Build = function(self)
+local original = self._dataHook:GetOriginal("WeaponInventory")
+if type(original) ~= "table" then return original end
+
+local out, have, sample, keyedByName = {}, {}, nil, false
+for k, entry in pairs(original) do
+if type(k) == "string" then keyedByName = true end
+out[k] = entry
+if type(entry) == "table" then
+sample = sample or entry
+if entry.Name ~= nil then have[entry.Name] = true end
+end
+end
+
+local items = {}
+pcall(function()
+for name in pairs(itemLibrary.Items) do items[#items + 1] = name end
+end)
+
+for _, name in ipairs(items) do
+if not have[name] then
+if keyedByName then out[name] = blankEntry(sample, name) else out[#out + 1] = blankEntry(sample, name) end
+end
+end
+
+return out
+end
+
+index2._SetEnabled = function(self, enabled)
+if enabled == self._enabled then return end
+self._enabled = enabled
+
+if enabled then
+self._dataHook:Set("WeaponInventory", function() return self:_Build() end)
+else
+self._dataHook:Unset("WeaponInventory")
+end
+
+self._dataHook:TriggerDataChangedSignal("WeaponInventory")
+end
+
+index2.Destroy = function(self)
+self:_SetEnabled(false)
+self._trove:Destroy()
+end
+
+return index2
+end
+
+tbl17.jUW = function()
+local c = tbl17.cache.jUW
+
+if not c then
+c = { c = fn35() }
+tbl17.cache.jUW = c
+end
+
+return c.c
 end
 end
 do -- ju
@@ -66458,6 +66664,7 @@ v147:Add(v195.new(playerRegistry, v192:Reserve(), v193, v196))
 v147:Add(tbl17.jr().new())
 v147:Add(tbl17.js().new(v193))
 v147:Add(tbl17.jt().new(v193))
+v147:Add(tbl17.jUW().new(v193))
 local v197 = v147:Add(v124.new(v190, decoratorFactory))
 local v198 = v147:Add(v148.new(v190, playerTags))
 local v199 = v147:Add(v164.new(v190))
