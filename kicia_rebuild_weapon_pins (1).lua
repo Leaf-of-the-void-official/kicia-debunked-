@@ -19905,7 +19905,7 @@ return be.c
 end
 end
 do -- bf
-local function fn35() tbl17 .a_();local I= tbl17 .i().atomic;return{UserServer={ShowActive=false,ShareSkins=false},UnlockAll={Enabled=false,Cosmetics=I({}),Rarities=I({}),ForceRules=I({}),LockRules=I({}),Weapons=false}};end
+local function fn35() tbl17 .a_();local I= tbl17 .i().atomic;return{UserServer={ShowActive=false,ShareSkins=false},UnlockAll={Enabled=false,Weapons=false,Cosmetics=I({}),Rarities=I({}),ForceRules=I({}),LockRules=I({}),Weapons=false}};end
 
 tbl17.bf = function()
 local bf = tbl17.cache.bf
