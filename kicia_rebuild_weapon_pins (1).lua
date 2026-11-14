@@ -19905,7 +19905,7 @@ return be.c
 end
 end
 do -- bf
-local function fn35() tbl17 .a_();local I= tbl17 .i().atomic;return{UserServer={ShowActive=false,ShareSkins=false},UnlockAll={Enabled=false,Cosmetics=I({}),Rarities=I({}),ForceRules=I({}),LockRules=I({}),Weapons=false}};end
+local function fn35() tbl17 .a_();local I= tbl17 .i().atomic;return{UserServer={ShowActive=false,ShareSkins=false},UnlockAll={Enabled=false,Weapons=false,Cosmetics=I({}),Rarities=I({}),ForceRules=I({}),LockRules=I({}),Weapons=false}};end
 
 tbl17.bf = function()
 local bf = tbl17.cache.bf
@@ -34625,7 +34625,7 @@ return false
 end
 
 local inv = arg._inventory[arg2.CosmeticName]
-if type(inv) == "table" and arg2.ItemName ~= nil and inv[arg2.ItemName] == nil then
+if type(inv) == "table" and inv ~= v118 and arg2.ItemName ~= nil and inv[arg2.ItemName] == nil then
 return false
 end
 
@@ -38646,13 +38646,44 @@ return
 end
 v103(arg2, "Info", arg4)
 setmetatable(arg2, v125)
-local v126 = debug.getstack(2, v86[63])
-
-if type(v126) ~= "table" then
-v126 = debug.getstack(v86[56], 2)
+-- find the ViewModel from the caller's stack without ever throwing:
+-- different executors return different things from debug.getstack
+local viewModel = nil
+do
+local function probe(v)
+if type(v) ~= "table" then return nil end
+local vm = v102(v, "ViewModel")
+if type(vm) == "table" then return vm end
+local first = v102(v, 1)
+if type(first) == "table" then
+vm = v102(first, "ViewModel")
+if type(vm) == "table" then return vm end
+end
+return nil
 end
 
-local viewModel = v102(v126[1], "ViewModel")
+for level = 2, 7 do
+local ok, whole = pcall(debug.getstack, level)
+if ok then
+viewModel = probe(whole)
+if viewModel == nil and type(whole) == "table" then
+for slot = 1, 12 do
+viewModel = probe(whole[slot])
+if viewModel ~= nil then break end
+end
+end
+end
+if viewModel == nil then
+for slot = 1, 6 do
+local ok2, v = pcall(debug.getstack, level, slot)
+if ok2 then viewModel = probe(v) end
+if viewModel ~= nil then break end
+end
+end
+if viewModel ~= nil then break end
+end
+end
+
 local player = v102(v102(arg2, "ClientFighter"), "Player")
 local name = v102(arg2, "Name")
 
@@ -38660,8 +38691,16 @@ if player == localPlayer then
 arg.ViewModelCreated:Fire(name)
 end
 
+-- couldn't locate the view model: skip the cosmetic patch, never break the game
+if viewModel == nil then
+return
+end
+
 local v127 = arg._store:Get(player, name)
 local v128 = viewModel[v116.encode("Data")]
+if type(v128) ~= "table" then
+return
+end
 local flag19 = arg._rankPatchActive and player == localPlayer and (v127 == nil or v127.Charm == nil)
 local v129 = nil
 
@@ -60078,7 +60117,8 @@ local function buildUnlockLock(l,grid)
         cfg:Changed(FORCE):Connect(onChanged)
         cfg:Changed(LOCK):Connect(onChanged)
         for _,st in ipairs(controls) do st.reload() end
-        push()
+        -- only touch the cosmetics catalog at startup if rules were actually saved
+        if next(readSet(FORCE))~=nil or next(readSet(LOCK))~=nil then push() end
         ready=true
     end
 end
@@ -61872,6 +61912,65 @@ tbl17.cache.jr = jr
 end
 
 return jr.c
+end
+end
+do -- player data dump (helper for building the stat spoofer)
+--  Run  getgenv().KiciaDumpData()  in your executor (with every spoof turned off).
+--  It writes the structure of your player data to kiciarebuild/player_data_dump.txt
+--  (or copies it to the clipboard / prints it if the executor can't write files).
+getgenv().KiciaDumpData = function()
+    local ok, err = pcall(function()
+        local controller = tbl17.aS().PlayerDataController
+        local current = controller.CurrentData
+        local data = current and current.Data
+        if type(data) ~= "table" then error("player data isn't loaded yet - join a lobby first") end
+
+        local lines, seen = {}, {}
+        local function show(v)
+            if type(v) == "string" then return string.format("%q", string.sub(v, 1, 60)) end
+            return tostring(v)
+        end
+        local function walk(t, path, depth)
+            local keys = {}
+            for k in pairs(t) do keys[#keys + 1] = k end
+            table.sort(keys, function(a, b) return tostring(a) < tostring(b) end)
+            for i, k in ipairs(keys) do
+                if i > 80 then
+                    lines[#lines + 1] = path .. " ... (" .. (#keys - 80) .. " more keys)"
+                    break
+                end
+                local v, p = t[k], path .. "." .. tostring(k)
+                if type(v) == "table" then
+                    local n = 0
+                    for _ in pairs(v) do n += 1 end
+                    lines[#lines + 1] = p .. " = table (" .. n .. " entries)"
+                    if seen[v] then
+                        lines[#lines] = p .. " = <repeat>"
+                    elseif depth < 5 then
+                        seen[v] = true
+                        walk(v, p, depth + 1)
+                    end
+                else
+                    lines[#lines + 1] = p .. " = " .. show(v)
+                end
+            end
+        end
+        walk(data, "Data", 1)
+        local text = table.concat(lines, "\n")
+
+        local writefile_, makefolder_, isfolder_ = K.fn("writefile"), K.fn("makefolder"), K.fn("isfolder")
+        if writefile_ then
+            if makefolder_ and isfolder_ and not isfolder_("kiciarebuild") then pcall(makefolder_, "kiciarebuild") end
+            writefile_("kiciarebuild/player_data_dump.txt", text)
+            print("[Kicia Rebuild] data dump written to workspace/kiciarebuild/player_data_dump.txt (" .. #lines .. " lines)")
+        elseif K.fn("setclipboard") then
+            K.fn("setclipboard")(text)
+            print("[Kicia Rebuild] data dump copied to clipboard (" .. #lines .. " lines)")
+        else
+            print(text)
+        end
+    end)
+    if not ok then warn("[Kicia Rebuild] data dump failed: " .. tostring(err)) end
 end
 end
 do -- js
