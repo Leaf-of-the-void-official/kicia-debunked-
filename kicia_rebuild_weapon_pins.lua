@@ -34625,7 +34625,7 @@ return false
 end
 
 local inv = arg._inventory[arg2.CosmeticName]
-if type(inv) == "table" and arg2.ItemName ~= nil and inv[arg2.ItemName] == nil then
+if type(inv) == "table" and inv ~= v118 and arg2.ItemName ~= nil and inv[arg2.ItemName] == nil then
 return false
 end
 
@@ -60078,7 +60078,8 @@ local function buildUnlockLock(l,grid)
         cfg:Changed(FORCE):Connect(onChanged)
         cfg:Changed(LOCK):Connect(onChanged)
         for _,st in ipairs(controls) do st.reload() end
-        push()
+        -- only touch the cosmetics catalog at startup if rules were actually saved
+        if next(readSet(FORCE))~=nil or next(readSet(LOCK))~=nil then push() end
         ready=true
     end
 end
