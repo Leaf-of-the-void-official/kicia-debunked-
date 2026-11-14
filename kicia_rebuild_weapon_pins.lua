@@ -38646,13 +38646,44 @@ return
 end
 v103(arg2, "Info", arg4)
 setmetatable(arg2, v125)
-local v126 = debug.getstack(2, v86[63])
-
-if type(v126) ~= "table" then
-v126 = debug.getstack(v86[56], 2)
+-- find the ViewModel from the caller's stack without ever throwing:
+-- different executors return different things from debug.getstack
+local viewModel = nil
+do
+local function probe(v)
+if type(v) ~= "table" then return nil end
+local vm = v102(v, "ViewModel")
+if type(vm) == "table" then return vm end
+local first = v102(v, 1)
+if type(first) == "table" then
+vm = v102(first, "ViewModel")
+if type(vm) == "table" then return vm end
+end
+return nil
 end
 
-local viewModel = v102(v126[1], "ViewModel")
+for level = 2, 7 do
+local ok, whole = pcall(debug.getstack, level)
+if ok then
+viewModel = probe(whole)
+if viewModel == nil and type(whole) == "table" then
+for slot = 1, 12 do
+viewModel = probe(whole[slot])
+if viewModel ~= nil then break end
+end
+end
+end
+if viewModel == nil then
+for slot = 1, 6 do
+local ok2, v = pcall(debug.getstack, level, slot)
+if ok2 then viewModel = probe(v) end
+if viewModel ~= nil then break end
+end
+end
+if viewModel ~= nil then break end
+end
+end
+
 local player = v102(v102(arg2, "ClientFighter"), "Player")
 local name = v102(arg2, "Name")
 
@@ -38660,8 +38691,16 @@ if player == localPlayer then
 arg.ViewModelCreated:Fire(name)
 end
 
+-- couldn't locate the view model: skip the cosmetic patch, never break the game
+if viewModel == nil then
+return
+end
+
 local v127 = arg._store:Get(player, name)
 local v128 = viewModel[v116.encode("Data")]
+if type(v128) ~= "table" then
+return
+end
 local flag19 = arg._rankPatchActive and player == localPlayer and (v127 == nil or v127.Charm == nil)
 local v129 = nil
 
