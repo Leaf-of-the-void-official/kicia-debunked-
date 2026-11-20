@@ -38394,6 +38394,27 @@ end
 end
 
 arg:PivotTo(arg2:GetPivot())
+
+-- statue-style finishers freeze whatever pose the clone is in. The clone is made
+-- when the player spawns (standing), so copy the victim's live joint pose onto it.
+pcall(function()
+local liveJoints = {}
+for _, joint in arg2:GetDescendants() do
+if joint:IsA("Motor6D") and joint.Part1 ~= nil then
+liveJoints[joint.Part1.Name] = joint
+end
+end
+
+for _, joint in arg:GetDescendants() do
+if joint:IsA("Motor6D") and joint.Part1 ~= nil then
+local live = liveJoints[joint.Part1.Name]
+if live ~= nil then
+joint.Transform = live.Transform
+end
+end
+end
+end)
+
 arg.Parent = arg2.Parent
 local v120 = getthreadidentity()
 setthreadidentity(v86[56])
@@ -62140,6 +62161,41 @@ getgenv().KiciaDumpData = function()
         local current = controller.CurrentData
         local data = current and current.Data
         if type(data) ~= "table" then error("player data isn't loaded yet - join a lobby first") end
+
+        -- a spoofer may have wrapped the data in an empty proxy table; dig out the real one
+        local function entryCount(t)
+            local n = 0
+            for _ in pairs(t) do n += 1 end
+            return n
+        end
+        if entryCount(data) == 0 then
+            local mt = getmetatable(data)
+            local idx = type(mt) == "table" and rawget(mt, "__index") or nil
+            if type(idx) == "function" then
+                local ups = {}
+                if debug.getupvalues then
+                    local okAll, all = pcall(debug.getupvalues, idx)
+                    if okAll and type(all) == "table" then ups = all end
+                end
+                if next(ups) == nil and debug.getupvalue then
+                    for i = 1, 12 do
+                        local okOne, a, b = pcall(debug.getupvalue, idx, i)
+                        if okOne then ups[#ups + 1] = (type(a) == "string" and b ~= nil) and b or a end
+                    end
+                end
+                local best, bestCount = nil, 0
+                for _, v in pairs(ups) do
+                    if type(v) == "table" and rawget(v, "_spoofedDataByField") == nil then
+                        local n = entryCount(v)
+                        if n > bestCount then best, bestCount = v, n end
+                    end
+                end
+                if best ~= nil then data = best end
+            end
+        end
+        if entryCount(data) == 0 then
+            error("player data looks empty - your executor may not support debug.getupvalues")
+        end
 
         local lines, seen = {}, {}
         local function show(v)
