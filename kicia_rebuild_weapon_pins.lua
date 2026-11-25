@@ -19922,7 +19922,7 @@ return bd.c
 end
 end
 do -- be
-local function fn35()local I= tbl17 .i().atomic; tbl17 .aZ();local W,N,P= tbl17 .aU(), tbl17 .aW(), tbl17 .aY();local PF= tbl17 .aI().profile;local R={Aimbot=W.buildConfig(),SilentAim=N.buildConfig(),Triggerbot=P.buildConfig(),Ragebot={Enabled=false,Keybind={State=false,Kind="Always",Bind=nil,ShowInList=true,Invisible=false},Stability=0.15,ShootFrames=1,PrioritizeHackers=false,Weapons={Priority=I({"Primary","Secondary","Melee"}),Enabled={Primary=true,Secondary=true,Melee=true},OnEmpty="SwapOrReload"},Evasion={Mode="Random",Random={AnchorFromCharacter=false,BaseRadius=100,RadiusRandomFactor=0.5},ProjectileBreaker={DepthForward={Min=0,Max=4},DepthForwardFrequency=5,DepthUp={Min=0,Max=5.5},DepthUpFrequency=5,RepositionInterval=0.3,FallbackAnchorFromCharacter=false,FallbackBaseRadius=100,FallbackRadiusRandomFactor=0.5},Translocate={Offset=-5}},UtilizeHealthLead=false},Flickbot={Enabled=false,Keybind={State=false,Kind="Hold",Bind=nil,ShowInList=true,Invisible=false},Shoot=false,ShotDelay=0,Cooldown=250,FlickDuration=110,Curvature=12,Humanness=30}};PF(R.Ragebot);PF(R.Flickbot);return R;end
+local function fn35()local I= tbl17 .i().atomic; tbl17 .aZ();local W,N,P= tbl17 .aU(), tbl17 .aW(), tbl17 .aY();local PF= tbl17 .aI().profile;local R={Aimbot=W.buildConfig(),SilentAim=N.buildConfig(),Triggerbot=P.buildConfig(),Ragebot={Enabled=false,Keybind={State=false,Kind="Always",Bind=nil,ShowInList=true,Invisible=false},Stability=0.15,ShootFrames=1,PrioritizeHackers=false,Weapons={Priority=I({"Primary","Secondary","Melee"}),Enabled={Primary=true,Secondary=true,Melee=true},OnEmpty="SwapOrReload"},Evasion={Mode="Random",Random={AnchorFromCharacter=false,BaseRadius=100,RadiusRandomFactor=0.5},ProjectileBreaker={DepthForward={Min=0,Max=4},DepthForwardFrequency=5,DepthUp={Min=0,Max=5.5},DepthUpFrequency=5,RepositionInterval=0.3,FallbackAnchorFromCharacter=false,FallbackBaseRadius=100,FallbackRadiusRandomFactor=0.5},Translocate={Offset=-5}},UtilizeHealthLead=false},Flickbot={Enabled=false,Keybind={State=false,Kind="Hold",Bind=nil,ShowInList=true,Invisible=false},Shoot=false,ShotDelay=0,Cooldown=250,FlickDuration=110,Curvature=12,Humanness=30,FovRadius=150}};PF(R.Ragebot);PF(R.Flickbot);return R;end
 
 tbl17.be = function()
 local be = tbl17.cache.be
@@ -19980,7 +19980,7 @@ return bh.c
 end
 end
 do -- bi
-local function fn35() tbl17 .a3();return{Movement={WalkSpeed={Enabled=false,Speed=2,Keybind={State=false,Kind="Always",Bind=nil,ShowInList=true,Invisible=false}},JumpPower={Enabled=false,Speed=2,Keybind={State=false,Kind="Always",Bind=nil,ShowInList=false,Invisible=false}},Flight={Enabled=false,Speed=100,Keybind={State=false,Kind="Always",Bind=nil,ShowInList=true,Invisible=false}},Sliding={Enabled=false,Speed=10,Keybind={State=false,Kind="Always",Bind=nil,ShowInList=true,Invisible=false}},Noclip={Enabled=false,Keybind={State=false,Kind="Always",Bind=nil,ShowInList=true,Invisible=false}},AutoStrafe={Enabled=false,Speed=50,Keybind={State=false,Kind="Always",Bind=nil,ShowInList=true,Invisible=false}},LongJump={Enabled=false,Keybind={State=false,Kind="Tap",Bind=nil,ShowInList=true,Invisible=false},Mode="Under Feet",Force=60,UpwardVelocity=20,Behind=8},MovementRecorder={Enabled=false,HideUI=false,HideNotifications=false,OpenDistance=3,RenderDistance=50,LookAlignSpeed=180,AlignSnapDistance=0.2,LookSmoothing=35,Record={Keybind={State=false,Kind="Toggle",Bind=nil,ShowInList=true,Invisible=false}},Replay={Keybind={State=false,Kind="Toggle",Bind=nil,ShowInList=true,Invisible=false}}}},Removables={NoFlashbang=false,NoBurnEffect=false,NoAdsVignette=false,NoScopeOverlay=false,NoScopeReticle=false,NoGunTracers=false,NoMuzzleFlash=false,NoHitmarker=false},ThirdPerson={Enabled=false,Keybind={State=false,Kind="Always",Bind=nil,ShowInList=true,Invisible=false},ShowReplica=false,RayCheck=false,X=3,Y=2,Z=6},CameraFov={Enabled=false,Value=70},StretchedResolution={Enabled=false,X=13,Y=10},CustomCrosshair={Enabled=false,Style="Lines",Image={Name="",Size=32,Transparency=0},Length=12,Thickness=2,Gap=6,Outline={Enabled=false,Color=Color3.fromRGB(0,0,0),Thickness=1},Animation={Enabled=false,Kind="Shimmer",Speed=1,Shimmer={Color=Color3.fromRGB(40,40,40)},Perimeter={Color=ColorSequence.new(Color3.fromRGB(255,0,0),Color3.fromRGB(0,0,255))},PingPong={BackgroundColor=Color3.fromRGB(0,0,0),MainColor=Color3.fromRGB(255,255,255),Rotation=0}},Rotation={Enabled=false,Angle=0,Speed=90},Spread={Enabled=false,Range={Min=4,Max=16},Speed=3},Top={Enabled=true,Color=ColorSequence.new(Color3.fromRGB(255,255,255))},Bottom={Enabled=true,Color=ColorSequence.new(Color3.fromRGB(255,255,255))},Left={Enabled=true,Color=ColorSequence.new(Color3.fromRGB(255,255,255))},Right={Enabled=true,Color=ColorSequence.new(Color3.fromRGB(255,255,255))},Text={Enabled=false,Content="",Font="Inconsolata",Size=14,Offset=24,Color=ColorSequence.new(Color3.fromRGB(255,255,255)),Outline={Enabled=false,Color=Color3.fromRGB(0,0,0),Thickness=1},Animation={Enabled=false,Kind="Shimmer",Speed=1,Shimmer={Color=Color3.fromRGB(40,40,40)},Perimeter={Color=ColorSequence.new(Color3.fromRGB(255,0,0),Color3.fromRGB(0,0,255))},PingPong={BackgroundColor=Color3.fromRGB(0,0,0),MainColor=Color3.fromRGB(255,255,255),Rotation=0}}},FollowTarget={Enabled=false,Mode="Crosshair",Speed=20,Damper=1,SnapDistance=5}},AnimationPlayer={Enabled=false,Animation="Cat Girl Bounce",CustomId="",Speed=1,Start=0,End=100},DeviceSpoof={Enabled=false,SpoofType="VR"},PlayerSpoofer={LocalPlayer={Name={Enabled=false,Value="Nosniy"},DisplayName={Enabled=false,Value="Nosniy"},Avatar={Enabled=false,Value="20349956"},Ping={Enabled=false,Value="Low"},Fps={Enabled=false,Value="Mid"},Keys={Enabled=false,Value=999},EventCurrency={Enabled=false,Value=9999},Winstreak={Enabled=false,Value=999},Level={Enabled=false,Value=999},CasualWins={Enabled=false,Value=99999},RankedWins={Enabled=false,Value=9999},CasualWinPercent={Enabled=false,Value=100},RankedWinPercent={Enabled=false,Value=100},RankedElo={Enabled=false,Value=3600},LeaderboardRank={Enabled=false,Value=1},FavoriteMap={Enabled=false,Value="Arena"},NametagStatus={Enabled=false,Value="Prime"},Influencer={Enabled=false,Value=true},RobloxEmployee={Enabled=false,Value=true},NosniyTeam={Enabled=false}},OtherPlayers={Name={Enabled=false,Value=""},DisplayName={Enabled=false,Value=""},Avatar={Enabled=false,Value=""},Winstreak={Enabled=false,Value=0},Level={Enabled=false,Value=0},CasualWins={Enabled=false,Value=0},RankedWins={Enabled=false,Value=0},CasualWinPercent={Enabled=false,Value=0},RankedWinPercent={Enabled=false,Value=0},RankedElo={Enabled=false,Value=0},LeaderboardRank={Enabled=false,Value=200},FavoriteMap={Enabled=false,Value=""},NametagStatus={Enabled=false,Value="Prime"},Influencer={Enabled=false},RobloxEmployee={Enabled=false},NosniyTeam={Enabled=false}}}};end
+local function fn35() tbl17 .a3();return{Movement={WalkSpeed={Enabled=false,Speed=2,Keybind={State=false,Kind="Always",Bind=nil,ShowInList=true,Invisible=false}},JumpPower={Enabled=false,Speed=2,Keybind={State=false,Kind="Always",Bind=nil,ShowInList=false,Invisible=false}},Flight={Enabled=false,Speed=100,Keybind={State=false,Kind="Always",Bind=nil,ShowInList=true,Invisible=false}},Sliding={Enabled=false,Speed=10,Keybind={State=false,Kind="Always",Bind=nil,ShowInList=true,Invisible=false}},Noclip={Enabled=false,Keybind={State=false,Kind="Always",Bind=nil,ShowInList=true,Invisible=false}},AutoStrafe={Enabled=false,Speed=50,Keybind={State=false,Kind="Always",Bind=nil,ShowInList=true,Invisible=false}},LongJump={Enabled=false,Keybind={State=false,Kind="Tap",Bind=nil,ShowInList=true,Invisible=false},Mode="Under Feet",Force=60,UpwardVelocity=20,Behind=8},MovementRecorder={Enabled=false,HideUI=false,HideNotifications=false,OpenDistance=3,RenderDistance=50,LookAlignSpeed=180,AlignSnapDistance=0.2,LookSmoothing=35,Record={Keybind={State=false,Kind="Toggle",Bind=nil,ShowInList=true,Invisible=false}},Replay={Keybind={State=false,Kind="Toggle",Bind=nil,ShowInList=true,Invisible=false}}}},Removables={NoFlashbang=false,NoBurnEffect=false,NoAdsVignette=false,NoScopeOverlay=false,NoScopeReticle=false,NoGunTracers=false,NoMuzzleFlash=false,NoHitmarker=false},ThirdPerson={Enabled=false,Keybind={State=false,Kind="Always",Bind=nil,ShowInList=true,Invisible=false},ShowReplica=false,RayCheck=false,X=3,Y=2,Z=6},CameraFov={Enabled=false,Value=70},StretchedResolution={Enabled=false,X=13,Y=10},CustomCrosshair={Enabled=false,Style="Lines",Image={Name="",Size=32,Transparency=0},Length=12,Thickness=2,Gap=6,Outline={Enabled=false,Color=Color3.fromRGB(0,0,0),Thickness=1},Animation={Enabled=false,Kind="Shimmer",Speed=1,Shimmer={Color=Color3.fromRGB(40,40,40)},Perimeter={Color=ColorSequence.new(Color3.fromRGB(255,0,0),Color3.fromRGB(0,0,255))},PingPong={BackgroundColor=Color3.fromRGB(0,0,0),MainColor=Color3.fromRGB(255,255,255),Rotation=0}},Rotation={Enabled=false,Angle=0,Speed=90},Spread={Enabled=false,Range={Min=4,Max=16},Speed=3},Top={Enabled=true,Color=ColorSequence.new(Color3.fromRGB(255,255,255))},Bottom={Enabled=true,Color=ColorSequence.new(Color3.fromRGB(255,255,255))},Left={Enabled=true,Color=ColorSequence.new(Color3.fromRGB(255,255,255))},Right={Enabled=true,Color=ColorSequence.new(Color3.fromRGB(255,255,255))},Text={Enabled=false,Content="",Font="Inconsolata",Size=14,Offset=24,Color=ColorSequence.new(Color3.fromRGB(255,255,255)),Outline={Enabled=false,Color=Color3.fromRGB(0,0,0),Thickness=1},Animation={Enabled=false,Kind="Shimmer",Speed=1,Shimmer={Color=Color3.fromRGB(40,40,40)},Perimeter={Color=ColorSequence.new(Color3.fromRGB(255,0,0),Color3.fromRGB(0,0,255))},PingPong={BackgroundColor=Color3.fromRGB(0,0,0),MainColor=Color3.fromRGB(255,255,255),Rotation=0}}},FollowTarget={Enabled=false,Mode="Crosshair",Speed=20,Damper=1,SnapDistance=5}},AnimationPlayer={Enabled=false,Animation="Cat Girl Bounce",CustomId="",Speed=1,Start=0,End=100},DeviceSpoof={Enabled=false,SpoofType="VR"},PlayerSpoofer={LocalPlayer={Name={Enabled=false,Value="Nosniy"},DisplayName={Enabled=false,Value="Nosniy"},Avatar={Enabled=false,Value="20349956"},Ping={Enabled=false,Value="Low"},Keys={Enabled=false,Value=999},EventCurrency={Enabled=false,Value=9999},Winstreak={Enabled=false,Value=999},Level={Enabled=false,Value=999},CasualWins={Enabled=false,Value=99999},RankedWins={Enabled=false,Value=9999},CasualWinPercent={Enabled=false,Value=100},RankedWinPercent={Enabled=false,Value=100},RankedElo={Enabled=false,Value=3600},LeaderboardRank={Enabled=false,Value=1},FavoriteMap={Enabled=false,Value="Arena"},NametagStatus={Enabled=false,Value="Prime"},Influencer={Enabled=false,Value=true},RobloxEmployee={Enabled=false,Value=true},NosniyTeam={Enabled=false}},OtherPlayers={Name={Enabled=false,Value=""},DisplayName={Enabled=false,Value=""},Avatar={Enabled=false,Value=""},Winstreak={Enabled=false,Value=0},Level={Enabled=false,Value=0},CasualWins={Enabled=false,Value=0},RankedWins={Enabled=false,Value=0},CasualWinPercent={Enabled=false,Value=0},RankedWinPercent={Enabled=false,Value=0},RankedElo={Enabled=false,Value=0},LeaderboardRank={Enabled=false,Value=200},FavoriteMap={Enabled=false,Value=""},NametagStatus={Enabled=false,Value="Prime"},Influencer={Enabled=false},RobloxEmployee={Enabled=false},NosniyTeam={Enabled=false}}}};end
 
 tbl17.bi = function()
 local bi = tbl17.cache.bi
@@ -59176,7 +59176,7 @@ return h0.c
 end
 end
 do -- h1
-local function fn35() tbl17 .aE();return function(l,I)local function W(...)return{I,"Fov",...};end;l:AddColor({Row=l:AddToggle({Label="Show Targeting Circle",Config=W("Circle","Visible")}).Row,Gradient="editable",Alpha=true,Config=W("Circle","Stroke","Gradient"),Transparency=W("Circle","Stroke","Transparency")});l:AddSlider({Label="Radius (px)",Min=1,Max=600,Config=W("Radius")});l:AddSlider({Label="Thickness",Min=0,Max=25,Config=W("Circle","Stroke","Thickness")});l:AddColor({Row=l:AddToggle({Label="Filled",Config=W("Circle","Fill","Enabled")}).Row,Gradient="editable",Alpha=true,Config=W("Circle","Fill","Gradient"),Transparency=W("Circle","Fill","Transparency")});l:AddGroup({Source=l:AddToggle({Label="Animated",Config=W("Circle","Animated","Enabled")})}):AddSlider({Label="Animation Speed (deg/s)",Min=0,Max=360,Config=W("Circle","Animated","Speed")});local I=l:AddGroup({Source=l:AddToggle({Label="Follow Target",Config=W("Circle","FollowTarget","Enabled")})});I:AddSlider({Label="Follow Speed",Default=20,Min=1,Max=50,Config=W("Circle","FollowTarget","Speed")});I:AddSlider({Label="Follow Damper",Default=1,Min=0,Max=30,Config=W("Circle","FollowTarget","Damper")});I:AddSlider({Label="Snap Distance",Default=5,Min=0,Max=10,Config=W("Circle","FollowTarget","SnapDistance")});end;end
+local function fn35() tbl17 .aE();return function(l,I)local function W(...)return{I,"Fov",...};end;l:AddColor({Row=l:AddToggle({Label="Show Targeting Circle",Config=W("Circle","Visible")}).Row,Gradient="editable",Alpha=true,Config=W("Circle","Stroke","Gradient"),Transparency=W("Circle","Stroke","Transparency")});l:AddSlider({Label="Radius (px)",Min=1,Max=5000,Config=W("Radius")});l:AddSlider({Label="Thickness",Min=0,Max=25,Config=W("Circle","Stroke","Thickness")});l:AddColor({Row=l:AddToggle({Label="Filled",Config=W("Circle","Fill","Enabled")}).Row,Gradient="editable",Alpha=true,Config=W("Circle","Fill","Gradient"),Transparency=W("Circle","Fill","Transparency")});l:AddGroup({Source=l:AddToggle({Label="Animated",Config=W("Circle","Animated","Enabled")})}):AddSlider({Label="Animation Speed (deg/s)",Min=0,Max=360,Config=W("Circle","Animated","Speed")});local I=l:AddGroup({Source=l:AddToggle({Label="Follow Target",Config=W("Circle","FollowTarget","Enabled")})});I:AddSlider({Label="Follow Speed",Default=20,Min=1,Max=50,Config=W("Circle","FollowTarget","Speed")});I:AddSlider({Label="Follow Damper",Default=1,Min=0,Max=30,Config=W("Circle","FollowTarget","Damper")});I:AddSlider({Label="Snap Distance",Default=5,Min=0,Max=10,Config=W("Circle","FollowTarget","SnapDistance")});end;end
 
 tbl17.h1 = function()
 local h1 = tbl17.cache.h1
@@ -59405,7 +59405,7 @@ return ih.c
 end
 end
 do -- ii
-local function fn35() tbl17 .aE();local I= tbl17 .h6();return function(l,W)local N=l:AddSection({Title="Flickbot",Side="right"});I(N,"Enable Flickbot",{"Hold","Toggle"},{"Flickbot"},true);N:AddGroup({Source=N:AddToggle({Label="Shoot",Config={"Flickbot","Shoot"}})}):AddSlider({Label="Shot Delay (ms)",Min=0,Max=250,Config={"Flickbot","ShotDelay"}});N:AddSlider({Label="Cooldown (ms)",Min=0,Max=2000,Config={"Flickbot","Cooldown"}});N:AddSlider({Label="Flick Duration (ms)",Min=30,Max=400,Config={"Flickbot","FlickDuration"}});N:AddSlider({Label="Curvature",Min=0,Max=50,Config={"Flickbot","Curvature"}});N:AddSlider({Label="Humanness",Min=0,Max=100,Config={"Flickbot","Humanness"}});N:AddButton({Label="Open Aimbot Targeting",OnClick=W});end;end
+local function fn35() tbl17 .aE();local I= tbl17 .h6();return function(l,W)local N=l:AddSection({Title="Flickbot",Side="right"});I(N,"Enable Flickbot",{"Hold","Toggle"},{"Flickbot"},true);N:AddGroup({Source=N:AddToggle({Label="Shoot",Config={"Flickbot","Shoot"}})}):AddSlider({Label="Shot Delay (ms)",Min=0,Max=250,Config={"Flickbot","ShotDelay"}});N:AddSlider({Label="Cooldown (ms)",Min=0,Max=2000,Config={"Flickbot","Cooldown"}});N:AddSlider({Label="Flick Duration (ms)",Min=30,Max=400,Config={"Flickbot","FlickDuration"}});N:AddSlider({Label="Curvature",Min=0,Max=50,Config={"Flickbot","Curvature"}});N:AddSlider({Label="Humanness",Min=0,Max=100,Config={"Flickbot","Humanness"}});N:AddSlider({Label="FOV Radius (px)",Min=1,Max=5000,Config={"Flickbot","FovRadius"}});N:AddButton({Label="Open Aimbot Targeting",OnClick=W});end;end
 
 tbl17.ii = function()
 local ii = tbl17.cache.ii
@@ -60466,7 +60466,7 @@ return iu.c
 end
 end
 do -- iv
-local function fn35()local I= tbl17 .bG(); tbl17 .aE();local W= tbl17 .a6();local function l(N,P)local a=I:Get(P);if type(a)=="number"then N:Set(tostring(a),true);end;N:OnChanged(function(a)local e=tonumber(a);if e~=nil and e~=I:Get(P)then I:Set(P,e);end;end);N:Connect(I:GetPropertyChangedSignal(P),function(I)if type(I)=="number"then N:Set(tostring(I),true);end;end);end;local I={{Field="Name",Label="Name",Value={Kind="text",Placeholder="Value"}},{Field="DisplayName",Label="Display Name",Value={Kind="text",Placeholder="Value"}},{Field="Avatar",Label="Avatar",Value={Kind="text",Placeholder="User ID"}},{Field="Winstreak",Label="Winstreak",Value={Kind="number",Placeholder="Value"}},{Field="Level",Label="Level",Value={Kind="number",Placeholder="Value"}},{Field="CasualWins",Label="Casual Wins",Value={Kind="number",Placeholder="Value"}},{Field="RankedWins",Label="Ranked Wins",Value={Kind="number",Placeholder="Value"}},{Field="CasualWinPercent",Label="Casual Win %",Value={Kind="percent",Placeholder="Win %"}},{Field="RankedWinPercent",Label="Ranked Win %",Value={Kind="percent",Placeholder="Win %"}},{Field="RankedElo",Label="Ranked ELO",Value={Kind="number",Placeholder="Value"}},{Field="LeaderboardRank",Label="Leaderboard Rank",Value={Kind="number",Placeholder="Value"}},{Field="FavoriteMap",Label="Favorite Map",Value={Kind="text",Placeholder="Favorite Map"}},{Field="NametagStatus",Label="Nametag Status",Value={Kind="dropdown",Placeholder="Status",Options={"Prime","Contraband"}}},{Field="Influencer",Label="Influencer",Value={Kind="toggle"}},{Field="RobloxEmployee",Label="Roblox Employee",Value={Kind="toggle"}},{Field="NosniyTeam",Label="Nosniy Games Team",Value={Kind="toggle"}}};local N,P=W(I,{{Field="Ping",Label="Ping",Value={Kind="dropdown",Placeholder="Ping Value",Options={"Low","Medium","High"}}},{Field="Fps",Label="FPS",Value={Kind="dropdown",Placeholder="FPS Value",Options={"Low","Mid","High"}}},{Field="Keys",Label="Keys",Value={Kind="number",Placeholder="Value"}},{Field="EventCurrency",Label="Event Currency",Value={Kind="number",Placeholder="Value"}}}),I;local function I(a,e,c,E)for p,p in E,nil,nil do local E,T=a:AddToggle({Label=string.format("%s %s",tostring(e),tostring(p.Label)),Config=W(c,{p.Field,"Enabled"})}),p.Value;if T.Kind=="toggle"then continue;end;local e,t=W(c,{p.Field,"Value"}),a:AddGroup({Source=E});if T.Kind=="percent"then t:AddSlider({Label=T.Placeholder,Min=0,Max=100,Step=0.1,Config=e});elseif T.Kind=="number"then l(t:AddTextBox({Label=T.Placeholder}),e);elseif T.Kind=="text"then t:AddTextBox({Label=T.Placeholder,Config=e});elseif T.Kind=="dropdown"then t:AddDropdown({Label=T.Placeholder,Options=T.Options,Config=e});end;end;end;return function(l)local W,a=l:AddMultiSection({Titles={"Local Player","Other Player"},Side="right"});I(W,"Local Player",{"PlayerSpoofer","LocalPlayer"},N);I(a,"Other Player",{"PlayerSpoofer","OtherPlayers"},P);end;end
+local function fn35()local I= tbl17 .bG(); tbl17 .aE();local W= tbl17 .a6();local function l(N,P)local a=I:Get(P);if type(a)=="number"then N:Set(tostring(a),true);end;N:OnChanged(function(a)local e=tonumber(a);if e~=nil and e~=I:Get(P)then I:Set(P,e);end;end);N:Connect(I:GetPropertyChangedSignal(P),function(I)if type(I)=="number"then N:Set(tostring(I),true);end;end);end;local I={{Field="Name",Label="Name",Value={Kind="text",Placeholder="Value"}},{Field="DisplayName",Label="Display Name",Value={Kind="text",Placeholder="Value"}},{Field="Avatar",Label="Avatar",Value={Kind="text",Placeholder="User ID"}},{Field="Winstreak",Label="Winstreak",Value={Kind="number",Placeholder="Value"}},{Field="Level",Label="Level",Value={Kind="number",Placeholder="Value"}},{Field="CasualWins",Label="Casual Wins",Value={Kind="number",Placeholder="Value"}},{Field="RankedWins",Label="Ranked Wins",Value={Kind="number",Placeholder="Value"}},{Field="CasualWinPercent",Label="Casual Win %",Value={Kind="percent",Placeholder="Win %"}},{Field="RankedWinPercent",Label="Ranked Win %",Value={Kind="percent",Placeholder="Win %"}},{Field="RankedElo",Label="Ranked ELO",Value={Kind="number",Placeholder="Value"}},{Field="LeaderboardRank",Label="Leaderboard Rank",Value={Kind="number",Placeholder="Value"}},{Field="FavoriteMap",Label="Favorite Map",Value={Kind="text",Placeholder="Favorite Map"}},{Field="NametagStatus",Label="Nametag Status",Value={Kind="dropdown",Placeholder="Status",Options={"Prime","Contraband"}}},{Field="Influencer",Label="Influencer",Value={Kind="toggle"}},{Field="RobloxEmployee",Label="Roblox Employee",Value={Kind="toggle"}},{Field="NosniyTeam",Label="Nosniy Games Team",Value={Kind="toggle"}}};local N,P=W(I,{{Field="Ping",Label="Ping",Value={Kind="dropdown",Placeholder="Ping Value",Options={"Low","Medium","High"}}},{Field="Keys",Label="Keys",Value={Kind="number",Placeholder="Value"}},{Field="EventCurrency",Label="Event Currency",Value={Kind="number",Placeholder="Value"}}}),I;local function I(a,e,c,E)for p,p in E,nil,nil do local E,T=a:AddToggle({Label=string.format("%s %s",tostring(e),tostring(p.Label)),Config=W(c,{p.Field,"Enabled"})}),p.Value;if T.Kind=="toggle"then continue;end;local e,t=W(c,{p.Field,"Value"}),a:AddGroup({Source=E});if T.Kind=="percent"then t:AddSlider({Label=T.Placeholder,Min=0,Max=100,Step=0.1,Config=e});elseif T.Kind=="number"then l(t:AddTextBox({Label=T.Placeholder}),e);elseif T.Kind=="text"then t:AddTextBox({Label=T.Placeholder,Config=e});elseif T.Kind=="dropdown"then t:AddDropdown({Label=T.Placeholder,Options=T.Options,Config=e});end;end;end;return function(l)local W,a=l:AddMultiSection({Titles={"Local Player","Other Player"},Side="right"});I(W,"Local Player",{"PlayerSpoofer","LocalPlayer"},N);I(a,"Other Player",{"PlayerSpoofer","OtherPlayers"},P);end;end
 
 tbl17.iv = function()
 local iv = tbl17.cache.iv
@@ -62173,192 +62173,6 @@ end
 return jr.c
 end
 end
-do -- jrFps
-local function fn35()
-local v115 = tbl17.bG()
-local v116 = tbl17.k()
-local v117 = tbl17.bY()
-
--- realistic fake framerates: each preset wanders around a mean, eases between
--- targets, and now and then dips, so the value never sits at one number
-local PRESETS = {
-Low = { mean = 36, sd = 5, lo = 24, hi = 48, dip = 0.10 },
-Mid = { mean = 62, sd = 4, lo = 52, hi = 75, dip = 0.07 },
-High = { mean = 144, sd = 6, lo = 115, hi = 165, dip = 0.06 },
-}
-local rng = Random.new()
-
-local function gauss()
-local u1, u2 = math.max(rng:NextNumber(), 1e-6), rng:NextNumber()
-return math.sqrt(-2 * math.log(u1)) * math.cos(2 * math.pi * u2)
-end
-
--- state shared across script reloads so the namecall hook is only installed once
-local env = getgenv()
-local shared = env.__KiciaFpsSpoof
-if shared == nil then
-shared = { active = false, physics = nil, hooked = false, owner = nil }
-env.__KiciaFpsSpoof = shared
-end
-
-local function installPhysicsHook()
-if shared.hooked then return true end
-local hookmetamethod = K.fn("hookmetamethod")
-local getnamecallmethod = K.fn("getnamecallmethod")
-if hookmetamethod == nil or getnamecallmethod == nil then return false end
-local checkcaller = K.fn("checkcaller")
-local wrap = K.fn("newcclosure") or function(f) return f end
-local ok = pcall(function()
-local old
-old = hookmetamethod(game, "__namecall", wrap(function(self, ...)
-if shared.active and shared.physics ~= nil and self == workspace and getnamecallmethod() == "GetRealPhysicsFPS" and (checkcaller == nil or not checkcaller()) then
-return shared.physics()
-end
-return old(self, ...)
-end))
-end)
-shared.hooked = ok
-return ok
-end
-
-local index2 = {}
-index2.__index = index2
-
-index2.new = function()
-local obj = setmetatable({
-_trove = v116.new(),
-_preset = "Mid",
-_enabled = false,
-_attached = false,
-_cur = 62,
-_target = 62,
-_nextAt = 0,
-_evalAt = 0,
-_value = 62,
-_restores = {},
-}, index2)
-obj:_Initialize()
-return obj
-end
-
-index2._Sample = function(arg)
-local now = os.clock()
-if now - arg._evalAt < 0.016 then return arg._value end
-local p = PRESETS[arg._preset] or PRESETS.Mid
-local dt = math.clamp(now - arg._evalAt, 0, 0.5)
-arg._evalAt = now
-
-if now >= arg._nextAt then
-local t = p.mean + gauss() * p.sd
-if rng:NextNumber() < p.dip then
-t = p.lo + (p.mean - p.lo) * rng:NextNumber() * 0.4
-end
-arg._target = math.clamp(t, p.lo, p.hi)
-arg._nextAt = now + rng:NextNumber(0.3, 1.1)
-end
-
-arg._cur = arg._cur + (arg._target - arg._cur) * (1 - math.exp(-dt * 7))
-arg._value = math.clamp(arg._cur + rng:NextNumber(-0.6, 0.6), p.lo - 4, p.hi)
-return arg._value
-end
-
--- wrap any game utility getter that reads the framerate (GetFPS, GetFramerate, ...)
-index2._AttachUtility = function(arg)
-pcall(function()
-local util = tbl17.aS().Utility
-local tables = {}
-if type(util) == "table" then tables[#tables + 1] = util end
-local mt = getmetatable(util)
-local idx = type(mt) == "table" and rawget(mt, "__index") or nil
-if type(idx) == "table" then tables[#tables + 1] = idx end
-
-for _, tbl in ipairs(tables) do
-for name, fn in pairs(tbl) do
-if type(name) == "string" and type(fn) == "function" then
-local lower = string.lower(name)
-if string.sub(lower, 1, 3) == "get" and (string.find(lower, "fps", 1, true) or string.find(lower, "framerate", 1, true)) then
-rawset(tbl, name, function(...)
-if arg._enabled then return math.floor(arg:_Sample() + 0.5) end
-return fn(...)
-end)
-arg._restores[#arg._restores + 1] = function() rawset(tbl, name, fn) end
-end
-end
-end
-end
-end)
-end
-
-index2._Enable = function(arg)
-arg._enabled = true
-shared.owner = arg
-shared.physics = function()
--- physics FPS is capped at ~60 in Roblox, so keep it believable for any preset
-local v = arg:_Sample()
-if v >= 60 then return 60 - rng:NextNumber(0, 0.12) end
-return v
-end
-shared.active = true
-
-if not arg._attached then
-arg._attached = true
-arg:_AttachUtility()
-local physicsHooked = installPhysicsHook()
-if #arg._restores == 0 and not physicsHooked then
-warn("[Kicia Rebuild] FPS spoof: no hook point available (executor missing hookmetamethod and no game FPS getter found)")
-end
-end
-end
-
-index2._Disable = function(arg)
-arg._enabled = false
-if shared.owner == arg then
-shared.active = false
-shared.physics = nil
-shared.owner = nil
-end
-for _, undo in ipairs(arg._restores) do pcall(undo) end
-arg._restores = {}
-arg._attached = false
-end
-
-index2._Initialize = function(arg)
-local function apply()
-local cfg = v115.Data.PlayerSpoofer.LocalPlayer.Fps
-if cfg == nil then return end
-local preset = PRESETS[cfg.Value] ~= nil and cfg.Value or "Mid"
-if preset ~= arg._preset then
-arg._preset = preset
-arg._cur = PRESETS[preset].mean
-arg._target = PRESETS[preset].mean
-arg._nextAt = 0
-end
-if cfg.Enabled then arg:_Enable() else arg:_Disable() end
-end
-
-v117(arg._trove, "Fps", apply, { "LocalPlayer" })
-apply()
-end
-
-index2.Destroy = function(arg)
-arg:_Disable()
-arg._trove:Destroy()
-end
-
-return index2
-end
-
-tbl17.jrFps = function()
-local jrFps = tbl17.cache.jrFps
-
-if not jrFps then
-jrFps = { c = fn35() }
-tbl17.cache.jrFps = jrFps
-end
-
-return jrFps.c
-end
-end
 do -- player data dump (helper for building the stat spoofer)
 --  Run  getgenv().KiciaDumpData()  in your executor (with every spoof turned off).
 --  It writes the structure of your player data to kiciarebuild/player_data_dump.txt
@@ -62843,8 +62657,10 @@ local v129 = v121.new(arg2, arg, aimbot.TargetConditions, aimbot.TargetHitboxes[
 local tbl18 = {
 _trove = flickbot,
 _playerContext = arg2,
-_targetSelection = v122.new(v129, v115.buildMeasure(aimbot.Fov.Radius, aimbot.TargetConditions.WithinFov), v126),
+_targetSelection = v122.new(v129, v115.buildMeasure(data.Flickbot.FovRadius or aimbot.Fov.Radius, aimbot.TargetConditions.WithinFov), v126),
 _state = "Idle",
+_pending = false,
+_retryAt = 0,
 _selected = nil,
 _trajectory = nil,
 _trajectoryIndex = v86[63],
@@ -62863,7 +62679,7 @@ end))
 
 local v130 = v125(arg2, flickbot, "features.Aimbot", v129, function() return data.Aimbot.TargetHitboxes end)
 local function fn37(selection) tbl18._targetSelection:SetHitboxSelectionMode(v115.buildHitboxSelectionMode(selection)) end
-flickbot:Connect(v118:GetPropertyChangedSignal({ "Aimbot", "Fov" }), function(f) tbl18._targetSelection:SetMeasure(v115.buildMeasure(f.Radius, data.Aimbot.TargetConditions.WithinFov)) end)
+flickbot:Connect(v118:GetPropertyChangedSignal({ "Flickbot", "FovRadius" }), function(r) tbl18._targetSelection:SetMeasure(v115.buildMeasure(r, data.Aimbot.TargetConditions.WithinFov)) end)
 flickbot:Connect(v118:GetPropertyChangedSignal({ "Aimbot", "TargetConditions" }), function(c)
 v129:SetConditions(c)
 tbl18._targetSelection:SetMeasure(v115.buildMeasure(data.Aimbot.Fov.Radius, c.WithinFov))
@@ -62878,6 +62694,7 @@ end
 index2._OnKeybindChanged = function(arg, arg2)
 if not arg2 then
 arg._isEnabledHeld = false
+arg._pending = false
 return
 end
 
@@ -62886,6 +62703,7 @@ return
 end
 arg._isEnabledHeld = true
 if arg._state ~= "Idle" then
+arg._pending = true -- remember the press; fire as soon as the flickbot is free
 return
 end
 arg:_StartFlick()
@@ -62998,6 +62816,15 @@ end
 
 index2.Update = function(arg, arg2)
 local state = arg._state
+
+if state == "Idle" and (arg._pending or arg._isEnabledHeld) then
+local now = os.clock()
+if now >= arg._retryAt then
+arg._retryAt = now + 0.05 -- don't re-run target selection every frame when nothing is in range
+arg._pending = false
+arg:_StartFlick()
+end
+end
 
 if state == "Flicking" then
 local selected = arg._selected
@@ -67277,7 +67104,6 @@ local v195 = tbl17.jp()
 local v196 = v147:Add(v194.new())
 v147:Add(v195.new(playerRegistry, v192:Reserve(), v193, v196))
 v147:Add(tbl17.jr().new())
-v147:Add(tbl17.jrFps().new())
 v147:Add(tbl17.js().new(v193))
 v147:Add(tbl17.jt().new(v193))
 v147:Add(tbl17.jUW().new(v193))
