@@ -29781,6 +29781,15 @@ return out
 end
 
 index2.GetTargets = function(l)
+-- getgenv().KiciaNoBots = true turns range-bot targeting off (for testing).
+-- Any error in the bot path falls back to normal player targets, so aimbot keeps working.
+if getgenv().KiciaNoBots then return l._enemyByPlayer end
+local ok, result = pcall(l._GetTargetsWithBots, l)
+if ok and result ~= nil then return result end
+return l._enemyByPlayer
+end
+
+index2._GetTargetsWithBots = function(l)
 local registry = l._fighters ~= nil and l._fighters.EnemyRegistry or nil
 local dummies, targets = {}, {}
 if registry ~= nil then
@@ -29808,7 +29817,10 @@ local ok, built = pcall(makeBotTarget, model)
 proxy = ok and built or nil
 cache[model] = proxy
 end
-if proxy ~= nil then merged[model] = proxy end
+if proxy ~= nil then
+local okCheck = pcall(function() return l:TargetMeetsConditions(proxy) end)
+if okCheck then merged[model] = proxy end
+end
 end
 end
 
